@@ -32,6 +32,10 @@ def build(checkpoint_path, config_path, output_name):
     
     
     generator_converter = tf.lite.TFLiteConverter.from_saved_model('saved_models/'+output_name+'/generator')
+    generator_converter.target_spec.supported_ops = [
+        tf.lite.OpsSet.TFLITE_BUILTINS, # enable TensorFlow Lite ops.
+        tf.lite.OpsSet.SELECT_TF_OPS # enable TensorFlow ops.
+    ]
     generator_converter.experimental_new_converter = True
     generator_tflite = generator_converter.convert()
     open('tflite/'+output_name+'/generator.tflite', 'wb').write(generator_tflite)
