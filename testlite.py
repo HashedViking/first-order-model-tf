@@ -70,5 +70,5 @@ def process_kp_driving(kp_driving,kp_source,relative,adapt_movement_scale):
     process_kp_driving_interpreter.invoke()
     return process_kp_driving_interpreter.get_tensor(process_kp_driving_output_index)
 
-predictions = animate(source_image,frames,generator,kp_detector,process_kp_driving,1,parser.relative,parser.adapt_movement_scale)
+predictions = animate(source_image,frames,generator,kp_detector,process_kp_driving,4,parser.relative,parser.adapt_movement_scale)
 imageio.mimsave(parser.output+'.tflite.mp4',[img_as_ubyte(frame) for frame in predictions], fps=fps)
