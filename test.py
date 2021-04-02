@@ -23,6 +23,8 @@ reader = imageio.get_reader(parser.driving_video)
 fps = reader.get_meta_data()['fps']
 reader.close()
 driving_video = imageio.mimread(parser.driving_video, memtest=False)
+print(len(driving_video))
+print(fps)
 source_image = resize(source_image, (256, 256))[..., :3][None].astype('float32')
 source = source_image.astype(np.float32)
 driving_video = [resize(frame, (256, 256))[..., :3] for frame in driving_video][0:len(driving_video) if len(tf.config.list_physical_devices('GPU'))>0 else 200]
@@ -40,5 +42,5 @@ process_kp_driving_loader = tf.saved_model.load('saved_models/'+parser.model+'/p
 process_kp_driving_base = process_kp_driving_loader.signatures['serving_default']
 process_kp_driving = lambda l,m,n,o: process_kp_driving_base(kp_driving=l, kp_source=m, relative=tf.constant(n), adapt_movement_scale=tf.constant(o))['output_0']
 
-predictions = animate(source_image,frames,generator,kp_detector,process_kp_driving,4,parser.relative,parser.adapt_movement_scale)
+predictions = animate(source_image,frames,generator,kp_detector,process_kp_driving,1,parser.relative,parser.adapt_movement_scale)
 imageio.mimsave(parser.output+'.saved_model.mp4',[img_as_ubyte(frame) for frame in predictions], fps=fps)

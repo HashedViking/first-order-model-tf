@@ -3,7 +3,7 @@ from skimage.transform import resize
 from skimage import img_as_ubyte
 import tensorflow as tf
 import numpy as np
-from animate import animate 
+from animate import animate
 import argparse
 
 parser = argparse.ArgumentParser(description='Test inference using tf lite models')
@@ -39,7 +39,7 @@ def kp_detector(img):
     kp_detector_interpreter.set_tensor(kp_detector_input_index,img)
     kp_detector_interpreter.invoke()
     return kp_detector_interpreter.get_tensor(kp_detector_output_index)
-    
+
 generator_interpreter = tf.lite.Interpreter(model_path='tflite/'+parser.model+'/generator.tflite')
 source_image_index = generator_interpreter.get_input_details()[2]['index']
 generator_kp_driving_index = generator_interpreter.get_input_details()[0]['index']
@@ -70,6 +70,5 @@ def process_kp_driving(kp_driving,kp_source,relative,adapt_movement_scale):
     process_kp_driving_interpreter.invoke()
     return process_kp_driving_interpreter.get_tensor(process_kp_driving_output_index)
 
-    
-predictions = animate(source_image,frames,generator,kp_detector,process_kp_driving,4,parser.relative,parser.adapt_movement_scale)
+predictions = animate(source_image,frames,generator,kp_detector,process_kp_driving,1,parser.relative,parser.adapt_movement_scale)
 imageio.mimsave(parser.output+'.tflite.mp4',[img_as_ubyte(frame) for frame in predictions], fps=fps)
